@@ -1,0 +1,13 @@
+--- mrt-2.2a-Aug-14-2000/src/configure.in.orig	2000-08-14 20:46:10.000000000 +0200
++++ mrt-2.2a-Aug-14-2000/src/configure.in	2004-10-23 17:21:34.391849259 +0200
+@@ -299,8 +299,9 @@
+ fi
+ 
+ dnl Checks for bind libraries.
++AC_CHECK_FUNC(gethostbyname, [], [
+ AC_CHECK_LIB(bind, gethostbyname, [LIBS="$LIBS -lbind"],
+-    [AC_CHECK_LIB(resolv, gethostbyname, [LIBS="$LIBS -lresolv"])])
++    [AC_CHECK_LIB(resolv, gethostbyname, [LIBS="$LIBS -lresolv"])])])
+ dnl AC_CHECK_LIB(resolv, inet_pton, [LIBS="$LIBS -lresolv"])
+ 
+ dnl check for gdbm.h and/or db.h
