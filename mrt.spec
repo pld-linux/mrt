@@ -13,6 +13,7 @@ Patch0:		%{name}-perl.patch
 Patch1:		%{name}-fix.patch
 Patch2:		%{name}-va_arg.patch
 URL:		http://www.mrtd.net/
+BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gdbm-devel
 BuildRequires:	rpm-perlprov
