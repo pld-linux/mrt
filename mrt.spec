@@ -4,21 +4,22 @@ Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
 Version:	2.2.2a
 Release:	2
-Copyright:	Distributable
+License:	distributable
 Group:		Networking/Admin
 Group(de):	Netzwerkwesen/Administration
-Group(pl):	Sieciowe/Administacyjne
-URL:		http://www.mrtd.net/
+Group(pl):	Sieciowe/Administracyjne
 Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-Aug11.tar.gz
 Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
-Prereq:		/sbin/chkconfig
+URL:		http://www.mrtd.net/
 BuildRequires:	gdbm-devel
+BuildRequires:	rpm-perlprov
+Prereq:		/sbin/chkconfig
 Prereq:		rc-scripts
 Provides:	routingdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	bird
-Obsoletes:      gated
+Obsoletes:	gated
 Obsoletes:	zebra
 Obsoletes:	zebra-guile
 
@@ -60,12 +61,15 @@ install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT%{_sysconfdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/mrtd
 install -d docs/scripts; cd docs
 
-cp  ../../src/programs/bgpsim/*.conf .
-cp  ../../src/programs/mrtd/mrtd.pim.conf .
-cp  ../../src/programs/{bgpsim,route_{atob,btoa}}/*.pl scripts/
-cp  ../../src/programs/{sbgp,route_{atob,btoa}}/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
+cp -f ../../src/programs/bgpsim/*.conf .
+cp -f ../../src/programs/mrtd/mrtd.pim.conf .
+cp -f ../../src/programs/{bgpsim,route_{atob,btoa}}/*.pl scripts/
+cp -f ../../src/programs/{sbgp,route_{atob,btoa}}/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
 gzip -9nf ../../src.*/docs/{*.conf,scripts/*.pl}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add mrtd >&2
@@ -82,9 +86,6 @@ if [ "$1" = "0" ]; then
 	fi
 	/sbin/chkconfig --del mrtd >&2
 fi
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
