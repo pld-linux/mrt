@@ -6,8 +6,6 @@ Version:	2.2.2a
 Release:	2
 License:	distributable
 Group:		Networking/Admin
-Group(de):	Netzwerkwesen/Administration
-Group(pl):	Sieciowe/Administracyjne
 Source0:	http://prdownloads.sourceforge.net/mrt/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
