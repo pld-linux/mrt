@@ -44,7 +44,7 @@ install -d $RPM_BUILD_ROOT%{_sbindir} \
 	$RPM_BUILD_ROOT%{_mandir}/man{1,8}} \
 	$RPM_BUILD_ROOT/etc/rc.d/init.d
 
-make install \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT%{_sbindir}
 
 install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT%{_sysconfdir}
