@@ -1,0 +1,15 @@
+--- mrt-2.2a-Aug-14-2000/src/lib/kernel/socket.c.orig	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/kernel/socket.c	Wed Jan  2 14:36:50 2002
+@@ -21,12 +21,6 @@
+ #endif /* HAVE_NETINET_ICMP6_H */
+ #ifdef linux
+ /* #include <linux/in.h> */
+-struct in_pktinfo
+-{
+-        int             ipi_ifindex;
+-        struct in_addr  ipi_spec_dst;
+-        struct in_addr  ipi_addr;
+-};
+ #endif /* linux */
+ #include <api6.h>
+ #include <igmp.h>
