@@ -12,6 +12,7 @@ Patch0:		%{name}-perl.patch
 Patch1:		%{name}-fix.patch
 Patch2:		%{name}-va_arg.patch
 URL:		http://www.mrtd.net/
+BuildRequires:	automake
 BuildRequires:	gdbm-devel
 BuildRequires:	rpm-perlprov
 PreReq:		rc-scripts
@@ -45,6 +46,8 @@ chmod u+rw configure
 cd ..
 
 cd `ls -d src.*`
+cp %{_datadir}/automake/config.*   .
+cp %{_datadir}/automake/install-sh .
 ac_n="-n"; export ac_n
 %configure \
 	--enable-ipv6 \
