@@ -16,14 +16,18 @@
 # Get network config
 . /etc/sysconfig/network
 
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down "Dynamic Route Daemon"
+		exit 1
+	fi
+else
+	exit 0
+fi
+
 # Get service config
 [ -f /etc/sysconfig/mrt ] && . /etc/sysconfig/mrt
-
-# Check that networking is up.
-if [ "${NETWORKING}" = "no" ]; then
-	echo "WARNING: Networking is down. Mrt service can't be runed "
-	exit 1
-fi
 
 # Sanity checks.
 [ -f /etc/mrtd.conf ] || exit 0
@@ -35,19 +39,24 @@ case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/mrtd ]; then
-		show "Starting Route Daemon: "
+		msg_starting "Dynamic Route Daemon"
 		daemon mrtd
+		touch /var/lock/subsys/mrtd
 	else
-		echo "mrtd seems be running... restarting"
-		$0 stop
-		$0 start
+		msg_already_running "Dynamic Route Daemon"
+		exit 1
 	fi
-	touch /var/lock/subsys/mrtd
 	;;
   stop)
-	show "Stopping Route Daemon: "
-	killproc mrtd 
-	rm -f /var/lock/subsys/mrtd
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/mrtd ]; then
+		msg_stopping "Dynamic Route Daemon"
+		killproc mrtd 
+		rm -f /var/lock/subsys/mrtd
+	else
+		msg_not_running "Dynamic Route Daemon"
+		exit 1
+	fi
 	;;
   status)
 	status mrtd
@@ -57,7 +66,7 @@ case "$1" in
 	$0 start
 	;;
   *)
-	echo "Usage: $0 {start|stop|status|restart|reload}"
+	echo "Usage: $0 {start|stop|restart|reload|status}"
 	exit 1
 esac
 
