@@ -1,13 +1,15 @@
+%define	date	990502
+
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
-Version:	1.5.2a
-Release:	4d
+Version:	1.6.0a
+Release:	1.%{date}
 Copyright:	Distributable
 Group:		Networking/Admin
 Group(pl):	Sieci/Administracja
 URL:		ftp://ftp.merit.edu/net-research/mrt
-Source0:	%{name}-%{version}-src.tar.gz
+Source0:	%{name}-%{version}-%{date}-src.tar.gz
 Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-linux.patch
@@ -25,17 +27,16 @@ protoko³y: RIP, RIPng, BGP oraz BGP4+.
 %prep
 %setup -q 
 %patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 
 %build
 ./make-sym-links
 cd `ls -d src.*`
-CFLAGS="$RPM_OPT_FLAGS -D_HAVE_STRING_ARCH_strtok_r" LDFLAGS=-s \
-    ./configure \
-	--prefix=/usr \
-	--disable-thread
+CFLAGS="$RPM_OPT_FLAGS" LDFLAGS=-s \
+    ./configure %{_target} \
+	--prefix=/usr 
 
-make CFLAGS="$RPM_OPT_FLAGS -D_HAVE_STRING_ARCH_strtok_r"
+make
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -67,7 +68,7 @@ gzip -9nf $RPM_BUILD_ROOT/usr/man/{man1/*,man8/*} \
 	../../src.*/docs/{*.conf,scripts/*.pl}
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add mrtd
