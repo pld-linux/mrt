@@ -18,8 +18,8 @@ MRT is a multi-threaded routing toolkit. It supports RIP, RIPng, BGP
 and BGP4+ protocols, for both IPv4 and IPv6.
 
 %description -l pl
-MRT jest wielow±tkowym narzêdziem do routingu obs³uguj±cym
-protoko³y: RIP, RIPng, BGP oraz BGP4+.
+MRT jest wielow±tkowym narzêdziem do routingu obs³uguj±cym protoko³y:
+RIP, RIPng, BGP oraz BGP4+.
 
 %prep
 %setup -q 
@@ -40,14 +40,16 @@ make
 rm -rf $RPM_BUILD_ROOT
 cd `ls -d src.*`
 
-install -d $RPM_BUILD_ROOT%{_sbindir}
-install -d $RPM_BUILD_ROOT%{_mandir}/{man8,man1}
-install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install -d $RPM_BUILD_ROOT%{_sbindir} \
+	$RPM_BUILD_ROOT%{_mandir}/man{1,8}} \
+	$RPM_BUILD_ROOT/etc/rc.d/init.d
 
-make	DESTDIR=$RPM_BUILD_ROOT%{_sbindir}	install
-install ../src/programs/mrtd/mrtd.conf		$RPM_BUILD_ROOT/etc
-install %{SOURCE1}				$RPM_BUILD_ROOT/etc/rc.d/init.d/mrtd
-install -d docs/scripts;			cd docs
+make install \
+	DESTDIR=$RPM_BUILD_ROOT%{_sbindir}
+
+install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT%{_sysconfdir}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/mrtd
+install -d docs/scripts; cd docs
 
 cp  ../../src/programs/bgpsim/*.conf 		.
 cp  ../../src/programs/mrtd/mrtd.pim.conf	.
@@ -76,7 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc src.*/docs/*
 
-%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) /etc/*.conf
+%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
 %attr(754,root,root) /etc/rc.d/init.d/mrtd
 
 %attr(755,root,root) %{_sbindir}/*
