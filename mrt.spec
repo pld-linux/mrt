@@ -63,8 +63,8 @@ cp  ../../src/programs/route_btoa/*.1 $RPM_BUILD_ROOT/usr/man/man1/
 
 cp  ../../src/programs/sbgp/*.1 $RPM_BUILD_ROOT/usr/man/man1/
 
-bzip2 -9 $RPM_BUILD_ROOT/usr/man/{man1/*,man8/*} 
-bzip2 -9 ../../src.*/docs/{*.conf,scripts/*.pl}
+gzip -9nf $RPM_BUILD_ROOT/usr/man/{man1/*,man8/*} \
+	../../src.*/docs/{*.conf,scripts/*.pl}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -85,7 +85,7 @@ fi
 %attr(700,root,root) %config %verify(not size mtime md5) /etc/rc.d/*
 
 %attr(755,root,root) /usr/sbin/*
-%attr(644,root, man) /usr/man/man[18]/*
+/usr/man/man[18]/*
 
 %changelog
 * Wed Jan 27 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
