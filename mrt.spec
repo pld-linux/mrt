@@ -1,12 +1,12 @@
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
-Version:	1.6.2a
+Version:	2.0.0a
 Release:	1
 Copyright:	Distributable
 Group:		Networking/Admin
 Group(pl):	Sieciowe/Administracja
-Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-990722-src.tar.gz
+Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-src.tar.gz
 Source1:	mrt.init
 Patch0:		mrt-perl.patch
 Prereq:		/sbin/chkconfig
@@ -26,11 +26,10 @@ protoko³y: RIP, RIPng, BGP oraz BGP4+.
 
 %build
 ./make-sym-links
-(cd src; autoconf)
+(cd src; chmod u+rw configure; autoconf)
 cd `ls -d src.*`
 CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
-./configure %{_target_platform} \
-	--prefix=/usr 
+%configure
 
 make
 
@@ -42,24 +41,19 @@ install -d $RPM_BUILD_ROOT%{_sbindir}
 install -d $RPM_BUILD_ROOT%{_mandir}/{man8,man1}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 
-make DESTDIR=$RPM_BUILD_ROOT%{_sbindir} MANDIR=$RPM_BUILD_ROOT%{_mandir} install
+make	DESTDIR=$RPM_BUILD_ROOT%{_sbindir}	install
+install ../src/programs/mrtd/mrtd.conf		$RPM_BUILD_ROOT/etc
+install %{SOURCE1}				$RPM_BUILD_ROOT/etc/rc.d/init.d/mrtd
+install -d docs/scripts;			cd docs
 
-install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT/etc
-
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/mrtd
-
-install -d docs/scripts; cd docs
-
-cp  ../../src/programs/bgpsim/*.conf .
-cp  ../../src/programs/bgpsim/*.pl scripts/
-
-cp  ../../src/programs/route_atob/*.pl scripts/
-cp  ../../src/programs/route_atob/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
-
-cp  ../../src/programs/route_btoa/*.pl scripts/
-cp  ../../src/programs/route_btoa/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
-
-cp  ../../src/programs/sbgp/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
+cp  ../../src/programs/bgpsim/*.conf 		.
+cp  ../../src/programs/mrtd/mrtd.pim.conf	.
+cp  ../../src/programs/bgpsim/*.pl		scripts/
+cp  ../../src/programs/route_atob/*.pl		scripts/
+cp  ../../src/programs/route_atob/*.1		$RPM_BUILD_ROOT%{_mandir}/man1/
+cp  ../../src/programs/route_btoa/*.pl		scripts/
+cp  ../../src/programs/route_btoa/*.1		$RPM_BUILD_ROOT%{_mandir}/man1/
+cp  ../../src/programs/sbgp/*.1			$RPM_BUILD_ROOT%{_mandir}/man1/
 
 gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man?/* \
 	../../src.*/docs/{*.conf,scripts/*.pl}
