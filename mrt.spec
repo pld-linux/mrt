@@ -43,7 +43,7 @@ cd `ls -d src.*`
 install -d $RPM_BUILD_ROOT/usr/{sbin,share/man/{man8,man1}}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 
-make DESTDIR=$RPM_BUILD_ROOT/usr/sbin MANDIR=$RPM_BUILD_ROOT%{_mandir} install
+make DESTDIR=$RPM_BUILD_ROOT%{_sbindir} MANDIR=$RPM_BUILD_ROOT%{_mandir} install
 
 install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT/etc
 
@@ -83,7 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) /etc/*.conf
 %attr(754,root,root) /etc/rc.d/init.d/mrtd
 
-%attr(755,root,root) /usr/sbin/*
+%attr(755,root,root) %{_sbindir}/*
 %{_mandir}/man[18]/*
 
 %changelog
