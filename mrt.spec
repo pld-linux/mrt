@@ -11,7 +11,7 @@ Source1:	mrt.init
 Patch0:		mrt-perl.patch
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts
-Buildroot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 MRT is a multi-threaded routing toolkit. It supports RIP, RIPng, BGP
