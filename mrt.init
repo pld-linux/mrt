@@ -33,7 +33,7 @@ fi
 [ -f /etc/mrtd.conf ] || exit 0
 [ -x /usr/sbin/mrtd ] || exit 0
 
-
+RETVAL=0
 # See how we were called.
 case "$1" in
   start)
@@ -41,7 +41,8 @@ case "$1" in
 	if [ ! -f /var/lock/subsys/mrtd ]; then
 		msg_starting "Dynamic Route Daemon"
 		daemon mrtd
-		touch /var/lock/subsys/mrtd
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/mrtd
 	else
 		msg_already_running "Dynamic Route Daemon"
 	fi
@@ -66,8 +67,8 @@ case "$1" in
 	exit $?
 	;;
   *)
-	echo "Usage: $0 {start|stop|restart|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
 	exit 3
 esac
 
-exit 0
+exit $RETVAL
