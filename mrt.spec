@@ -14,8 +14,13 @@ Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
 Prereq:		/sbin/chkconfig
 BuildRequires:	gdbm-devel
-Requires:	rc-scripts
+Prereq:		rc-scripts
+Provides:	routingdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Obsoletes:	bird
+Obsoletes:      gated
+Obsoletes:	zebra
+Obsoletes:	zebra-guile
 
 %description
 MRT is a multi-threaded routing toolkit. It supports RIP, RIPng, BGP
@@ -43,11 +48,10 @@ cd `ls -d src.*`
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd `ls -d src.*`
+install -d $RPM_BUILD_ROOTP{%{_sbindir},%{_mandir}/man{1,8}} \
+	$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 
-install -d $RPM_BUILD_ROOT%{_sbindir}
-install -d $RPM_BUILD_ROOT%{_mandir}/man{1,8}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
+cd `ls -d src.*`
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT%{_sbindir}
@@ -56,25 +60,29 @@ install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT%{_sysconfdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/mrtd
 install -d docs/scripts; cd docs
 
-cp  ../../src/programs/bgpsim/*.conf 		.
-cp  ../../src/programs/mrtd/mrtd.pim.conf	.
-cp  ../../src/programs/bgpsim/*.pl		scripts/
-cp  ../../src/programs/route_atob/*.pl		scripts/
-cp  ../../src/programs/route_atob/*.1		$RPM_BUILD_ROOT%{_mandir}/man1/
-cp  ../../src/programs/route_btoa/*.pl		scripts/
-cp  ../../src/programs/route_btoa/*.1		$RPM_BUILD_ROOT%{_mandir}/man1/
-cp  ../../src/programs/sbgp/*.1			$RPM_BUILD_ROOT%{_mandir}/man1/
+cp  ../../src/programs/bgpsim/*.conf .
+cp  ../../src/programs/mrtd/mrtd.pim.conf .
+cp  ../../src/programs/{bgpsim,route_{atob,btoa}}/*.pl scripts/
+cp  ../../src/programs/{sbgp,route_{atob,btoa}}/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
 gzip -9nf ../../src.*/docs/{*.conf,scripts/*.pl}
 
 %post
-/sbin/chkconfig --add mrtd
+/sbin/chkconfig --add mrtd >&2
+if [ -f /var/lock/subsys/mrtd ]; then
+	/etc/rc.d/init.d/mrtd restart >&2
+else
+	echo "Run '/etc/rc.d/init.d/mrtd start' to start routing deamon." >&2
+fi
 
 %preun
-if [ "$1" == "0" ]; then
-	/sbin/chkconfig --del mrtd
+if [ "$1" = "0" ]; then
+	if [ -f /var/lock/subsys/mrtd ]; then
+		/etc/rc.d/init.d/mrtd stop >&2
+	fi
+	/sbin/chkconfig --del mrtd >&2
 fi
-    
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
