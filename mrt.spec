@@ -71,8 +71,6 @@ cp -f ../../src/programs/mrtd/mrtd.pim.conf .
 cp -f ../../src/programs/{bgpsim,route_{atob,btoa}}/*.pl scripts/
 cp -f ../../src/programs/{sbgp,route_{atob,btoa}}/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
-gzip -9nf ../../src.*/docs/{*.conf,scripts/*.pl}
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
