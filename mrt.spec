@@ -1,7 +1,7 @@
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
-Version:	2.1.1a
+Version:	2.2.1a
 Release:	1
 Copyright:	Distributable
 Group:		Networking/Admin
@@ -30,7 +30,9 @@ protoko³y: RIP, RIPng, BGP oraz BGP4+.
 (cd src; chmod u+rw configure; autoconf)
 cd `ls -d src.*`
 CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
-%configure
+%configure \
+	--enable-ipv6 \
+	--disable-mrouting 
 
 make
 
