@@ -10,6 +10,7 @@ Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-src.tar.gz
 Source1:	mrt.init
 Patch0:		mrt-perl.patch
 Prereq:		/sbin/chkconfig
+Requires:	rc-scripts
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %description
