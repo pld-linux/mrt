@@ -3,7 +3,7 @@ Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
 Version:	2.2.2a
-Release:	5
+Release:	6
 License:	distributable
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/mrt/%{name}-%{version}.tar.gz
@@ -12,6 +12,7 @@ Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-fix.patch
 Patch2:		%{name}-va_arg.patch
+Patch3:		%{name}-nolibs.patch
 URL:		http://www.mrtd.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -20,11 +21,11 @@ BuildRequires:	rpm-perlprov
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Provides:	routingdaemon
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	bird
 Obsoletes:	gated
 Obsoletes:	zebra
 Obsoletes:	zebra-guile
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 MRT is a multi-threaded routing toolkit. It supports RIP, RIPng, BGP
@@ -39,6 +40,7 @@ RIP, RIPng, BGP oraz BGP4+.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 ./make-sym-links
@@ -76,8 +78,8 @@ install -d docs/scripts; cd docs
 
 cp -f ../../src/programs/bgpsim/*.conf .
 cp -f ../../src/programs/mrtd/mrtd.pim.conf .
-cp -f ../../src/programs/{bgpsim,route_{atob,btoa}}/*.pl scripts/
-cp -f ../../src/programs/{sbgp,route_{atob,btoa}}/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
+cp -f ../../src/programs/{bgpsim,route_{atob,btoa}}/*.pl scripts
+cp -f ../../src/programs/{sbgp,route_{atob,btoa}}/*.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
 %clean
 rm -rf $RPM_BUILD_ROOT
