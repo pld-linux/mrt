@@ -17,24 +17,19 @@ export PATH=/bin:/sbin:/usr/bin:/usr/sbin
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-# Try define nice level for mrtd
-NICE="nice -n 1"
-
 # Check that networking is up.
-[ ${NETWORKING} = "no" ] && exit 0
+[ "${NETWORKING}" = "no" ] && exit 0
 
 # See how we were called.
 case "$1" in
   start)
-	echo -n "Starting Route Daemon: "
-	$NICE mrtd 
-	echo done
+	show "Starting Route Daemon: "
+	daemon +1 mrtd 
 	touch /var/lock/subsys/mrtd
 	;;
   stop)
-	echo -n "Stopping Route Daemon: "
+	show "Stopping Route Daemon: "
 	killproc mrtd 
-	echo done
 	rm -f /var/lock/subsys/mrtd
 	;;
   status)
