@@ -83,30 +83,3 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_sbindir}/*
 %{_mandir}/man[18]/*
-
-%changelog
-* Fri May 14 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [1.6.0a-2.990502]
-- now package is FHS 2.0 compliant.
-
-* Wed Jan 27 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
-  [1.5.0a-3d]
-- final build for Tornado,
-- compressed man pages && documentaction,
-- fixed group, && added Group(pl),
-- other changes.
-
-* Sat Sep 05 1998 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
-  [1.4.9-1d]
-- updated to 1.4.9a.
-
-* Thu Sep 03 1998 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
-  [1.4.8-1-RH]
-- added Buildroot,
-- fixed files permissions,
-- build from non root's account.
-
-* Sat Aug 22 1998 Marek Obuchowicz <elephant@shadow.eu.org>
-  [1.4.8-1d]
-- first try at RPM,
-- build against GNU Libc-2.1.
