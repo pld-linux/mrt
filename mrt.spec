@@ -1,14 +1,12 @@
-%define	date	990502
-
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
-Version:	1.6.0a
-Release:	2.%{date}
+Version:	1.6.1a
+Release:	1
 Copyright:	Distributable
 Group:		Networking/Admin
 Group(pl):	Sieci/Administracja
-Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-%{date}-src.tar.gz
+Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-src.tar.gz
 Source1:	mrt.init
 Patch0:		mrt-perl.patch
 Prereq:		/sbin/chkconfig
@@ -69,7 +67,7 @@ gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man?/* \
 /sbin/chkconfig --add mrtd
 
 %preun
-if [ "$1" = "0 ]; then
+if [ "$1" == "0" ]; then
 	/sbin/chkconfig --del mrtd
 fi
     
