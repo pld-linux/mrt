@@ -5,7 +5,7 @@ Version:	1.6.1a
 Release:	1
 Copyright:	Distributable
 Group:		Networking/Admin
-Group(pl):	Sieci/Administracja
+Group(pl):	Sieciowe/Administracja
 Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-src.tar.gz
 Source1:	mrt.init
 Patch0:		mrt-perl.patch
