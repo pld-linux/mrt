@@ -7,6 +7,7 @@ Release:	3
 License:	distributable
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/mrt/%{name}-%{version}.tar.gz
+# Source0-md5:	68d6e681b0c01599d02ab60a640463a0
 Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-fix.patch
