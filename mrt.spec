@@ -3,7 +3,7 @@ Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
 Version:	2.2.2a
-Release:	1
+Release:	2
 Copyright:	Distributable
 Group:		Networking/Admin
 Group(de):	Netzwerkwesen/Administration
