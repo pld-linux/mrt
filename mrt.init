@@ -44,7 +44,6 @@ case "$1" in
 		touch /var/lock/subsys/mrtd
 	else
 		msg_already_running "Dynamic Route Daemon"
-		exit 1
 	fi
 	;;
   stop)
@@ -55,19 +54,20 @@ case "$1" in
 		rm -f /var/lock/subsys/mrtd
 	else
 		msg_not_running "Dynamic Route Daemon"
-		exit 1
 	fi
 	;;
   status)
 	status mrtd
+	exit $?
 	;;
-  restart|reload)
+  restart|force-reload)
 	$0 stop
 	$0 start
+	exit $?
 	;;
   *)
-	echo "Usage: $0 {start|stop|restart|reload|status}"
-	exit 1
+	echo "Usage: $0 {start|stop|restart|force-reload|status}"
+	exit 3
 esac
 
 exit 0
