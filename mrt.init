@@ -20,7 +20,7 @@
 [ -f /etc/sysconfig/mrt ] && . /etc/sysconfig/mrt
 
 # Check that networking is up.
-[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down"; exit 0
+[ "${NETWORKING}" == "no" ] && echo "Error: Networking is down" && exit 0
 
 # Sanity checks.
 [ -f /etc/mrtd.conf ] || exit 0
