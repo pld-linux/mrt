@@ -1,12 +1,12 @@
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
-Version:	1.6.1a
+Version:	1.6.2a
 Release:	1
 Copyright:	Distributable
 Group:		Networking/Admin
 Group(pl):	Sieciowe/Administracja
-Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-src.tar.gz
+Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-990722-src.tar.gz
 Source1:	mrt.init
 Patch0:		mrt-perl.patch
 Prereq:		/sbin/chkconfig
@@ -38,7 +38,8 @@ make
 rm -rf $RPM_BUILD_ROOT
 cd `ls -d src.*`
 
-install -d $RPM_BUILD_ROOT/usr/{sbin,share/man/{man8,man1}}
+install -d $RPM_BUILD_ROOT%{_sbindir}
+install -d $RPM_BUILD_ROOT%{_mandir}/{man8,man1}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 
 make DESTDIR=$RPM_BUILD_ROOT%{_sbindir} MANDIR=$RPM_BUILD_ROOT%{_mandir} install
