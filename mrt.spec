@@ -34,7 +34,7 @@ CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 	--enable-ipv6 \
 	--disable-mrouting 
 
-make
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
