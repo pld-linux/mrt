@@ -1,30 +1,42 @@
-#!/bin/bash
+#!/bin/sh
 #
-# mrtd:         Starts the Dynamic Route Daemon 
+# mrtd		Starts the Dynamic Route Daemon 
 #
-# chkconfig: 345 80 45
-# description: Dynamic Route Daemon for IPv6 routers
+# chkconfig:	345 80 45
 #
-# processname: mrtd
-# config: /etc/mrtd.conf
+# description:	Dynamic Route Daemon for IPv6 routers
 #
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+# processname:	mrtd
+# config:	/etc/mrtd.conf
+
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config
+[ -f /etc/sysconfig/mrt ] && . /etc/sysconfig/mrt
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down"; exit 0
 
 # Sanity checks.
 [ -f /etc/mrtd.conf ] || exit 0
 [ -x /usr/sbin/mrtd ] || exit 0
 
-# Source function library.
-. /etc/rc.d/init.d/functions
-
-# Check that networking is up.
-[ "${NETWORKING}" = "no" ] && exit 0
 
 # See how we were called.
 case "$1" in
   start)
-	show "Starting Route Daemon: "
-	daemon +1 mrtd 
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/mrtd ]; then
+		show Starting mrtd
+		daemon mrtd
+	else
+		echo "mrtd already is running"
+	fi
 	touch /var/lock/subsys/mrtd
 	;;
   stop)
@@ -35,12 +47,12 @@ case "$1" in
   status)
 	status mrtd
 	;;
-  restart)
+  restart|reload)
 	$0 stop
 	$0 start
 	;;
   *)
-	echo "Usage: $0 {start|stop|status|restart}"
+	echo "Usage: $0 {start|stop|status|restart|reload}"
 	exit 1
 esac
 
