@@ -38,7 +38,9 @@ case "$1" in
 		show Starting mrtd
 		daemon mrtd
 	else
-		echo "mrtd already is running"
+		echo "mrtd seems be running... restarting"
+		$0 stop
+		$0 start
 	fi
 	touch /var/lock/subsys/mrtd
 	;;
