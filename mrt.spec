@@ -6,7 +6,7 @@ Version:	2.2.2a
 Release:	3
 License:	distributable
 Group:		Networking/Admin
-Source0:	http://prdownloads.sourceforge.net/mrt/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/mrt/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-fix.patch
@@ -14,8 +14,8 @@ Patch2:		%{name}-va_arg.patch
 URL:		http://www.mrtd.net/
 BuildRequires:	gdbm-devel
 BuildRequires:	rpm-perlprov
-Prereq:		/sbin/chkconfig
-Prereq:		rc-scripts
+PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
 Provides:	routingdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	bird
@@ -39,7 +39,10 @@ RIP, RIPng, BGP oraz BGP4+.
 
 %build
 ./make-sym-links
-(cd src; chmod u+rw configure; autoconf)
+cd src
+chmod u+rw configure
+%{__autoconf}
+cd ..
 
 cd `ls -d src.*`
 ac_n="-n"; export ac_n
