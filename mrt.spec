@@ -54,7 +54,7 @@ ac_n="-n"; export ac_n
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{1,8}} \
-	$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
+	$RPM_BUILD_ROOT/etc/rc.d/init.d
 
 cd `ls -d src.*`
 
@@ -63,7 +63,7 @@ cd `ls -d src.*`
 	MANDIR=$RPM_BUILD_ROOT%{_mandir}
 
 install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT%{_sysconfdir}
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/mrtd
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/mrtd
 install -d docs/scripts; cd docs
 
 cp -f ../../src/programs/bgpsim/*.conf .
@@ -95,6 +95,6 @@ fi
 %doc src.*/docs/*
 
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
-%attr(754,root,root) %{_sysconfdir}/rc.d/init.d/mrtd
+%attr(754,root,root) /etc/rc.d/init.d/mrtd
 %attr(755,root,root) %{_sbindir}/*
 %{_mandir}/man[18]/*
