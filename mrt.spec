@@ -11,6 +11,7 @@ Group(pl):	Sieciowe/Administracyjne
 Source0:	http://prdownloads.sourceforge.net/mrt/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
+Patch1:		%{name}-fix.patch
 URL:		http://www.mrtd.net/
 BuildRequires:	gdbm-devel
 BuildRequires:	rpm-perlprov
@@ -34,12 +35,14 @@ RIP, RIPng, BGP oraz BGP4+.
 %prep
 %setup -q -n %{name}-2.2a-Aug-14-2000
 %patch0 -p1
+%patch1 -p1
 
 %build
 ./make-sym-links
 (cd src; chmod u+rw configure; autoconf)
 
 cd `ls -d src.*`
+ac_n="-n"; export ac_n
 %configure \
 	--enable-ipv6 \
 	--enable-thread \
@@ -56,7 +59,8 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{1,8}} \
 cd `ls -d src.*`
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT%{_sbindir}
+	DESTDIR=$RPM_BUILD_ROOT%{_sbindir} \
+	MANDIR=$RPM_BUILD_ROOT%{_mandir}
 
 install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT%{_sysconfdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/mrtd
