@@ -35,7 +35,7 @@ case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/mrtd ]; then
-		show Starting mrtd
+		show "Starting Route Daemon: "
 		daemon mrtd
 	else
 		echo "mrtd seems be running... restarting"
