@@ -1,0 +1,689 @@
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/bgp_proto/bgp_util.c mrt-2.2a-Aug-14-2000/src/lib/bgp_proto/bgp_util.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/bgp_proto/bgp_util.c	Mon Aug 14 20:46:10 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/bgp_proto/bgp_util.c	Fri Aug 23 01:02:04 2002
+@@ -1645,32 +1645,32 @@
+     /* Process the Arguments */
+     va_start (ap, first);
+     for (attr = (enum BGP_ATTR) first; attr; 
+-				       attr = va_arg (ap, enum BGP_ATTR)) {
++				       attr = (enum BGP_ATTR) va_arg (ap, int)) {
+ 	switch (attr) {
+ #ifdef notdef
+ 	case BGP_MY_AS:
+ 	    local_bgp->this_as = va_arg (ap, int);
+ 	    break;
+ 	case BGP_MY_ID:
+-	    local_bgp->this_id = va_arg (ap, u_long);
++	    local_bgp->this_id = (u_long) va_arg (ap, int);
+ 	    if (!local_bgp->cluster_id)
+ 		local_bgp->cluster_id = local_bgp->this_id;
+ 	    break;
+ 	case BGP_CURRENT_BGP:
+-	    BGP->current_bgp = va_arg (ap, bgp_local_t *);
++	    BGP->current_bgp = (bgp_local_t *) va_arg (ap, int);
+ 	    break;
+ #endif
+ 	case BGP_PEER_DOWN_FN:
+-	    BGP->peer_down_call_fn = va_arg (ap, void_fn_t);
++	    BGP->peer_down_call_fn = (void_fn_t) va_arg (ap, int);
+ 	    break;
+ 	case BGP_PEER_ESTABLISHED_FN:
+-	    BGP->peer_established_call_fn = va_arg (ap, void_fn_t);
++	    BGP->peer_established_call_fn = (void_fn_t) va_arg (ap, int);
+ 	    break;
+ 	case BGP_RECV_UPDATE_FN:
+-	    BGP->update_call_fn = va_arg (ap, int_fn_t);
++	    BGP->update_call_fn = (int_fn_t) va_arg (ap, int);
+ 	    break;
+ 	case BGP_SEND_UPDATE_FN:
+-	    BGP->send_update_call_fn = va_arg (ap, int_fn_t);
++	    BGP->send_update_call_fn = (int_fn_t) va_arg (ap, int);
+ 	    break;
+ /*
+ 	case BGP_RT_UPDATE_FN:
+@@ -1678,7 +1678,7 @@
+ 	    break;
+ */
+ 	case BGP_STATE_CHANGE_FN:
+-	    BGP->state_change_fn = va_arg (ap, void_fn_t);
++	    BGP->state_change_fn = (int_fn_t) va_arg (ap, int);
+ 	    break;
+ 	case BGP_ACCEPT_ALL_PEERS:
+ 	    BGP->accept_all_peers = va_arg (ap, int);
+@@ -1690,14 +1690,14 @@
+ 	    BGP->cport = va_arg (ap, int);
+ 	    break;
+ 	case BGP_TRACE_STRUCT:
+-	    BGP->trace = va_arg (ap, trace_t *);
++	    BGP->trace = (trace_t *) va_arg (ap, int);
+ 	    break;
+ 	case BGP_DUMP_ROUTE_FORM:
+ 	    id = va_arg (ap, int);
+ 	    assert (id >= 0 && id < MAX_BGP_VIEWS);
+ 	    if (BGP->dump_route_form[id])
+ 		free (BGP->dump_route_form[id]);
+-	    BGP->dump_route_form[id] = va_arg (ap, char *);
++	    BGP->dump_route_form[id] = (char *) va_arg (ap, int);
+ 	    if (BGP->dump_route_form[id]) {
+ 		BGP->dump_route_form[id] = strdup (BGP->dump_route_form[id]);
+ 	        BGP->dump_route_interval[id] = va_arg (ap, int);
+@@ -1708,12 +1708,12 @@
+ 	case BGP_DUMP_UPDATE_FORM:
+ 	    if (BGP->dump_update_form)
+ 		free (BGP->dump_update_form);
+-	    BGP->dump_update_form = va_arg (ap, char *);
++	    BGP->dump_update_form = (char *) va_arg (ap, int);
+ 	    if (BGP->dump_update_form) {
+ 	        BGP->dump_update_form = strdup (BGP->dump_update_form);
+ 	        BGP->dump_update_interval = va_arg (ap, int);
+ 	        BGP->dump_update_time = 0;
+-	        BGP->dump_update_types = va_arg (ap, u_long);
++	        BGP->dump_update_types = (u_long) va_arg (ap, int);
+ 	        BGP->dump_update_family = va_arg (ap, int);
+ 	    }
+ 	    break;
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/config/bgpconf.c mrt-2.2a-Aug-14-2000/src/lib/config/bgpconf.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/config/bgpconf.c	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/config/bgpconf.c	Fri Aug 23 01:04:17 2002
+@@ -1325,12 +1325,12 @@
+     pthread_mutex_lock (&peer->mutex_lock);
+     va_start (ap, first);
+     for (attr = (enum BGP_PEER_ATTR) first; attr; 
+-				     attr = va_arg (ap, enum BGP_PEER_ATTR)) {
++				     attr = (enum BGP_PEER_ATTR) va_arg (ap, int)) {
+ 	switch (attr) {
+ 	case BGP_PEER_DESCRIPTION:
+ 	    if (peer->description)
+ 		Delete (peer->description);
+-	    peer->description = va_arg (ap, char *); /* don't need to dup */
++	    peer->description = (char *) va_arg (ap, int); /* don't need to dup */
+ 	    if (peer->description) {
+ #ifdef HAVE_IPV6
+ 		if (peer->peer_addr && peer->peer_addr->family == AF_INET6)
+@@ -1360,21 +1360,21 @@
+ 	case BGP_PEER_ALIAS_ADD:
+     	    if (peer->aliases == NULL)
+ 	        peer->aliases = LL_Create (0);
+-    	    LL_Add (peer->aliases, va_arg (ap, prefix_t *));
++    	    LL_Add (peer->aliases, (prefix_t *) va_arg (ap, int));
+ 	    break;
+ 	case BGP_PEER_ALIAS_DEL:
+     	    if (peer->aliases == NULL || LL_GetCount (peer->aliases) <= 0)
+ 	        break;
+-    	    LL_Remove (peer->aliases, va_arg (ap, prefix_t *));
++    	    LL_Remove (peer->aliases, (prefix_t *) va_arg (ap, int));
+ 	    break;
+ 	case BGP_PEER_MAXPREF:
+     	    peer->maximum_prefix = va_arg (ap, int);
+ 	    break;
+ 	case BGP_PEER_SETOPT:
+-            BIT_SET (peer->options, va_arg (ap, u_long));
++            BIT_SET (peer->options, (u_long) va_arg (ap, int));
+ 	    break;
+ 	case BGP_PEER_RESETOPT:
+-            BIT_RESET (peer->options, va_arg (ap, u_long));
++            BIT_RESET (peer->options, (u_long) va_arg (ap, int));
+ 	    break;
+ 	case BGP_PEER_DLIST_IN:
+     	    viewno = va_arg (ap, int);
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/io/io.c mrt-2.2a-Aug-14-2000/src/lib/io/io.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/io/io.c	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/io/io.c	Fri Aug 23 01:05:08 2002
+@@ -461,8 +461,8 @@
+     /* Process the Arguments */
+     va_start (ap, first);
+     for (attr = (enum IO_ATTR) first; attr != IO_NULL;
+-	 attr = va_arg (ap, enum IO_ATTR)) {
+-	if (io_setup (attr, io, va_arg (ap, char *)) != 0)
++	 attr = (enum IO_ATTR) va_arg (ap, int)) {
++	if (io_setup (attr, io, (char *) va_arg (ap, int)) != 0)
+ 	      return -1;
+     }
+     va_end (ap);
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/buffer.c mrt-2.2a-Aug-14-2000/src/lib/mrt/buffer.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/buffer.c	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/mrt/buffer.c	Fri Aug 23 01:07:27 2002
+@@ -376,9 +376,9 @@
+ 	case 'x':
+ 	case 'b':
+ 	    if (argtype == 'h')
+-		ulongarg = va_arg (ap, short);
++		ulongarg = (short) va_arg (ap, int);
+ 	    else if (argtype == 'l')
+-		ulongarg = va_arg (ap, long);
++		ulongarg = (long) va_arg (ap, int);
+ 	    else
+ 		ulongarg = va_arg (ap, int);
+ 	    digits = "0123456789abcdef";
+@@ -429,7 +429,7 @@
+ 	    goto common;
+ 
+ 	case 's':
+-	    strarg = va_arg (ap, char *);
++	    strarg = (char *) va_arg (ap, int);
+ 	    if (strarg == NULL)
+ 		continue;
+ 	    if (fmt[-1] == '%') {
+@@ -441,7 +441,7 @@
+ 
+ 	case 'p':
+ 	case 'a':
+-	    prefix = va_arg (ap, prefix_t *);
++	    prefix = (prefix_t *) va_arg (ap, int);
+ 	    if (prefix == NULL)
+ 		continue;
+ 	    inet_ntop (prefix->family, prefix_tochar (prefix), 
+@@ -452,7 +452,7 @@
+ 	    break;
+ 
+ 	case 'g':
+-	    gateway = va_arg (ap, gateway_t *);
++	    gateway = (gateway_t *) va_arg (ap, int);
+ 	    if (gateway == NULL)
+ 		continue;
+ 	    inet_ntop (gateway->prefix->family, 
+@@ -467,7 +467,7 @@
+ 	    break;
+ 
+ 	case 'A':
+-	    aspath = va_arg (ap, aspath_t *);
++	    aspath = (aspath_t *) va_arg (ap, int);
+ 	    if (fmt[-1] == '%') {
+ 		/* short cut, safer */
+ 		count += buffer_aspath_toa (aspath, buffer);
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/error.c mrt-2.2a-Aug-14-2000/src/lib/mrt/error.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/error.c	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/mrt/error.c	Fri Aug 23 01:08:26 2002
+@@ -35,7 +35,7 @@
+ 	va_list		args;
+ 
+ 	va_start(args, fmt);
+-	fmt = va_arg(args, char *);
++	fmt = (char *) va_arg(args, int);
+ 	vsprintf(emesgstr, fmt, args);
+ 	va_end(args);
+ 
+@@ -61,7 +61,7 @@
+ 	va_list		args;
+ 
+ 	va_start(args, fmt);
+-	fmt = va_arg(args, char *);
++	fmt = (char *) va_arg(args, int);
+ 	vsprintf(emesgstr, fmt, args);
+ 	va_end(args);
+ 
+@@ -86,7 +86,7 @@
+ 	va_list		args;
+ 
+ 	va_start(args, fmt);
+-	fmt = va_arg(args, char *);
++	fmt = (char *) va_arg(args, int);
+ 	vsprintf(emesgstr, fmt, args);
+ 	va_end(args);
+ 
+@@ -111,7 +111,7 @@
+ 	va_list		args;
+ 
+ 	va_start(args, fmt);
+-	fmt = va_arg(args, char *);
++	fmt = (char *) va_arg(args, int);
+ 	vsprintf(emesgstr, fmt, args);
+ 	va_end(args);
+ 
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/schedule.c mrt-2.2a-Aug-14-2000/src/lib/mrt/schedule.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/schedule.c	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/mrt/schedule.c	Fri Aug 23 01:08:57 2002
+@@ -164,7 +164,7 @@
+        event->description = strdup ("?");
+ 
+    for (i = 0; i < narg; i++)
+-      event->args[i] = va_arg (ap, void *);
++      event->args[i] = (void *) va_arg (ap, int);
+ 
+    event->call_fn = call_fn;
+    event->mutex = mutex;
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/select.c mrt-2.2a-Aug-14-2000/src/lib/mrt/select.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/select.c	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/mrt/select.c	Fri Aug 23 01:09:26 2002
+@@ -181,7 +181,7 @@
+     event = New_Event (narg);
+     event->description = strdup (name);
+     for (i = 0;i < narg; i++)
+-        event->args[i] = va_arg (ap, void *);
++        event->args[i] = (void *) va_arg (ap, int);
+     event->call_fn = call_fn;
+     va_end (ap);
+ 	
+@@ -204,7 +204,7 @@
+ 		name = "";
+     event->description = strdup (name);
+     for (i = 0;i < narg; i++)
+-        event->args[i] = va_arg (ap, void *);
++        event->args[i] = (void *) va_arg (ap, int);
+     event->call_fn = call_fn;
+     va_end (ap);
+ 	
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/trace.c mrt-2.2a-Aug-14-2000/src/lib/mrt/trace.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/trace.c	Mon Aug 14 20:46:11 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/mrt/trace.c	Fri Aug 23 01:12:46 2002
+@@ -106,7 +106,7 @@
+     }
+ 
+     va_start (args, tr);
+-    format = va_arg (args, char *);
++    format = (char *) va_arg (args, int);
+ 
+     /* Generate the trace output string in buffer for processing */
+     if (tr->buffer == NULL)
+@@ -460,7 +460,7 @@
+     /* Process the Arguments */
+     va_start (ap, first);
+     for (attr = (enum Trace_Attr) first; attr;
+-	 attr = va_arg (ap, enum Trace_Attr)) {
++	 attr = (enum Trace_Attr) va_arg (ap, int)) {
+ 	switch (attr) {
+ 	case TRACE_LOGFILE:
+     	    pthread_mutex_lock (&tmp->logfile->mutex_lock);
+@@ -481,7 +481,7 @@
+ 		    tmp->logfile->prev_logfile = tmp->logfile->logfile_name;
+ 	        }
+ 	    }
+-	    tmp->logfile->logfile_name = strdup (va_arg (ap, char *));
++	    tmp->logfile->logfile_name = strdup ((char *) va_arg (ap, int));
+ 	    tmp->logfile->logfd = get_trace_fd (tmp);
+     	    tmp->logfile->bytes_since_open = 0;
+     	    tmp->logfile->logsize = 0;
+@@ -490,24 +490,24 @@
+ 	    break;
+ 	case TRACE_FLAGS:
+ 	case TRACE_ADD_FLAGS:
+-	    tmp->flags |= va_arg (ap, long);
++	    tmp->flags |= (long) va_arg (ap, int);
+ 	    break;
+ 	case TRACE_DEL_FLAGS:
+-	    tmp->flags &= ~va_arg (ap, long);
++	    tmp->flags &= ~((long) va_arg (ap, int));
+ 	    break;
+ 	case TRACE_USE_SYSLOG:
+-	    tmp->syslog_flag = va_arg(ap, u_char);
++	    tmp->syslog_flag = (u_char) va_arg(ap, int);
+ 	    break;
+ 	case TRACE_MAX_FILESIZE:
+    	    if (tmp->slave) break; /* ignore */
+     	    pthread_mutex_lock (&tmp->logfile->mutex_lock);
+-	    tmp->logfile->max_filesize = va_arg(ap, u_int);
++	    tmp->logfile->max_filesize = (u_int) va_arg(ap, int);
+     	    pthread_mutex_unlock (&tmp->logfile->mutex_lock);
+ 	    break;
+ 	case TRACE_PREPEND_STRING:
+ 	    if (tmp->prepend)
+ 		Delete (tmp->prepend);
+-	    tmp->prepend = strdup (va_arg(ap, char*));
++	    tmp->prepend = strdup ((char *) va_arg(ap, int));
+ 	    break;
+ 	case TRACE_MAX_ERRORS:
+     	    if (tmp->error_list == NULL)
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/user.c mrt-2.2a-Aug-14-2000/src/lib/mrt/user.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/user.c	Tue Aug 15 03:06:46 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/mrt/user.c	Fri Aug 23 01:14:08 2002
+@@ -1615,7 +1615,7 @@
+     /* Process the Arguments */
+     va_start (ap, first);
+     for (attr = (enum UII_ATTR) first; attr;
+-	 attr = va_arg (ap, enum UII_ATTR)) {
++	 attr = (enum UII_ATTR) va_arg (ap, int)) {
+ 	switch (attr) {
+ 	case UII_PORT:
+ 	    tmp->port = va_arg (ap, int);
+@@ -1623,11 +1623,11 @@
+ 	case UII_ADDR:
+ 	    if (tmp->prefix)
+ 		Deref_Prefix (tmp->prefix);
+-	    tmp->prefix = Ref_Prefix (va_arg (ap, prefix_t *));
++	    tmp->prefix = Ref_Prefix ((prefix_t *) va_arg (ap, int));
+ 	    break;
+ 	case UII_PROMPT:
+ 	    state = va_arg (ap, int);
+-	    strarg = va_arg (ap, char *);
++	    strarg = (char *) va_arg (ap, int);
+ 	    if ((state < 0) || state > UII_MAX_STATE) {
+ 		return (-1);
+ 	    }
+@@ -1663,7 +1663,7 @@
+ 	case UII_PASSWORD:
+ 	    if (UII->password)
+ 		Delete (UII->password);
+-	    UII->password = va_arg (ap, char *);
++	    UII->password = (char *) va_arg (ap, int);
+ 	    if (UII->password)
+ 		UII->password = strdup (UII->password);
+ #ifdef notdef
+@@ -1677,7 +1677,7 @@
+ 	case UII_ENABLE_PASSWORD:
+ 	    if (UII->enable_password)
+ 		Delete (UII->enable_password);
+-	    UII->enable_password = va_arg (ap, char *);
++	    UII->enable_password = (char *) va_arg (ap, int);
+ 	    if (UII->enable_password)
+ 		UII->enable_password = strdup (UII->enable_password);
+ 	    goto quit;		/* XXX */
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/user_old.c mrt-2.2a-Aug-14-2000/src/lib/mrt/user_old.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/mrt/user_old.c	Mon Aug 14 20:46:12 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/mrt/user_old.c	Fri Aug 23 01:15:30 2002
+@@ -89,7 +89,7 @@
+ 		if ((prefix = ascii2prefix (AF_INET, token)) == NULL)
+ 		    goto finish;
+ 		match++;
+-		arg = va_arg (ap, void **);
++		arg = (void **) va_arg (ap, int);
+ 		*arg = prefix;
+ 	    }
+ #ifdef HAVE_IPV6
+@@ -102,7 +102,7 @@
+ 		if ((prefix = ascii2prefix (AF_INET6, token)) == NULL)
+ 		    goto finish;
+ 		match++;
+-		arg = va_arg (ap, void **);
++		arg = (void **) va_arg (ap, int);
+ 		*arg = prefix;
+ 	    }
+ #endif /* HAVE_IPV6 */
+@@ -125,7 +125,7 @@
+ 		    goto finish;
+ 		}
+ 		match++;
+-		arg = va_arg (ap, void **);
++		arg = (void **) va_arg (ap, int);
+ 		*arg = prefix;
+ 	    }
+ 	    else if (*fcp == 'a') { /* %p without /xx */
+@@ -162,7 +162,7 @@
+ 		    if (!isalnum (token[i]))
+ 			goto finish;
+ 		}
+-		chararg = va_arg (ap, char *);
++		chararg = (char *) va_arg (ap, int);
+ 		strcpy (chararg, token);
+ 		match++;
+ 	    }
+@@ -192,7 +192,7 @@
+ 	    else if (*fcp == 's') {
+ 		if ((token = uii_parse_line2 (&line, word)) == NULL)
+ 		    goto finish;
+-		chararg = va_arg (ap, char *);
++		chararg = (char *) va_arg (ap, int);
+ 		strcpy (chararg, token);
+ 		match++;
+ 	    }
+@@ -203,7 +203,7 @@
+ 	        /* this may be so strict */
+                 if (!isalpha (*token) && (*token != '/')) 
+ 		    goto finish; 
+-	         chararg = va_arg (ap, char*);
++	         chararg = (char *) va_arg (ap, int);
+ 	         strcpy (chararg, token);
+ 	         match++;
+             } 
+@@ -211,7 +211,7 @@
+ 	    else if (*fcp == 'S') {
+ 		/* if ((token = uii_parse_line2 (&line, word)) == NULL) 
+ 		       {return (-1);} */
+-		chararg = va_arg (ap, char *);
++		chararg = (char *) va_arg (ap, int);
+ 		strcpy (chararg, line);
+ 		match++;
+ 		return (match);
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/rip/rip_proto.c mrt-2.2a-Aug-14-2000/src/lib/rip/rip_proto.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/rip/rip_proto.c	Mon Aug 14 20:46:13 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/rip/rip_proto.c	Fri Aug 23 01:16:32 2002
+@@ -1147,7 +1147,7 @@
+ {
+     enum RIP_ATTR attr;
+ 
+-    while ((attr = va_arg (ap, enum RIP_ATTR)) != 0) {
++    while ((attr = (enum RIP_ATTR) va_arg (ap, int)) != 0) {
+ 
+ 	switch (attr) {
+ /*
+@@ -1156,7 +1156,7 @@
+ 	    break;
+ */
+ 	case RIP_TRACE_STRUCT:
+-	    rip->trace = va_arg (ap, trace_t *);
++	    rip->trace = (trace_t *) va_arg (ap, int);
+ 	    break;
+ 	default:
+ 	    assert (0);
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/struct/hash.c mrt-2.2a-Aug-14-2000/src/lib/struct/hash.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/struct/hash.c	Mon Aug 14 20:46:13 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/struct/hash.c	Fri Aug 23 01:24:01 2002
+@@ -86,15 +86,15 @@
+       h->resize = val;\
+       break;\
+     case HASH_HashFunction:\
+-      ptr = va_arg(ap, DATA_PTR);\
++      ptr = (DATA_PTR) va_arg(ap, int);\
+       h->hash = (HASH_HashProc)ptr;\
+       break;\
+     case HASH_LookupFunction:\
+-      ptr = va_arg(ap, DATA_PTR);\
++      ptr = (DATA_PTR) va_arg(ap, int);\
+       h->lookup = (HASH_LookupProc)ptr;\
+       break;\
+     case HASH_DestroyFunction:\
+-      ptr = va_arg(ap, DATA_PTR);\
++      ptr = (DATA_PTR) va_arg(ap, int);\
+       h->destroy = (HASH_DestroyProc)ptr;\
+       break;\
+     default:\
+@@ -147,7 +147,7 @@
+    h->destroy = NULL;
+ 
+    va_start(ap, first);
+-   for (attr = (enum HASH_ATTR)first; attr; attr = va_arg(ap, enum HASH_ATTR)) {
++   for (attr = (enum HASH_ATTR)first; attr; attr = (enum HASH_ATTR) va_arg(ap, int)) {
+       HMacro_SetAttr(h, attr, val, ptr);
+       if (!attr) {
+ 	 if (HASH_Handler) { (HASH_Handler)(h, HASH_BadArgument, "HASH_Create()"); }
+@@ -209,7 +209,7 @@
+ #endif
+    
+    va_start(ap, first);
+-   for (attr = (enum HASH_ATTR)first; attr; attr = va_arg(ap, enum HASH_ATTR)) {
++   for (attr = (enum HASH_ATTR)first; attr; attr = (enum HASH_ATTR) va_arg(ap, int)) {
+       HMacro_SetAttr(h, attr, val, ptr);
+       if (!attr) {
+ 	 if (HASH_Handler) { (HASH_Handler)(h, HASH_BadArgument, "HASH_SetAttributes()"); }
+@@ -277,7 +277,7 @@
+ #endif
+    
+    va_start(ap, first);
+-   for (attr = (enum HASH_ATTR)first; attr; attr = va_arg(ap, enum HASH_ATTR)) {
++   for (attr = (enum HASH_ATTR)first; attr; attr = (enum HASH_ATTR) va_arg(ap, int)) {
+       switch (attr) {
+        case HASH_Intrusive:
+ 	 val = va_arg(ap, int*);
+@@ -300,27 +300,27 @@
+ 	 *val = (h->attr & HASH_ReportAccess) ? True : False;
+ 	 break;
+        case HASH_NextOffset:
+-	 sh = va_arg(ap, unsigned short *);
++	 sh = (unsigned short *) va_arg(ap, int);
+ 	 *sh = (h->attr & HASH_NextOffset) ? True : False;
+ 	 break;
+        case HASH_KeyOffset:
+-	 sh = va_arg(ap, unsigned short *);
++	 sh = (unsigned short *) va_arg(ap, int);
+ 	 *sh = (h->attr & HASH_KeyOffset) ? True : False;
+ 	 break;
+        case HASH_DynamicResize:
+-	 val = va_arg(ap, int*);
++	 val = (int *) va_arg(ap, int);
+ 	 *val = h->resize;
+ 	 break;
+        case HASH_HashFunction:
+-	 ptr = va_arg(ap, DATA_PTR*);
++	 ptr = (DATA_PTR*) va_arg(ap, int);
+ 	 *ptr = (DATA_PTR)h->hash;
+ 	 break;
+        case HASH_LookupFunction:
+-	 ptr = va_arg(ap, DATA_PTR*);
++	 ptr = (DATA_PTR*) va_arg(ap, int);
+ 	 *ptr = (DATA_PTR)h->lookup;
+ 	 break;
+        case HASH_DestroyFunction:
+-	 ptr = va_arg(ap, DATA_PTR*);
++	 ptr = (DATA_PTR*) va_arg(ap, int);
+ 	 *ptr = (DATA_PTR)h->destroy;
+ 	 break;
+        default:
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/struct/linked_list.c mrt-2.2a-Aug-14-2000/src/lib/struct/linked_list.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/struct/linked_list.c	Mon Aug 14 20:46:13 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/struct/linked_list.c	Fri Aug 23 01:20:13 2002
+@@ -119,15 +119,15 @@
+       ll->attr = (enum LL_ATTR)(ll->attr | LL_Intrusive);\
+       break;\
+     case LL_FindFunction:\
+-      ptr = va_arg(ap, DATA_PTR);\
++      ptr = (DATA_PTR) va_arg(ap, int);\
+       ll->find_fn = (LL_FindProc)ptr;\
+       break;\
+     case LL_CompareFunction:\
+-      ptr = va_arg(ap, DATA_PTR);\
++      ptr = (DATA_PTR) va_arg(ap, int);\
+       ll->comp_fn = (LL_CompareProc)ptr;\
+       break;\
+     case LL_DestroyFunction:\
+-      ptr = va_arg(ap, DATA_PTR);\
++      ptr = (DATA_PTR) va_arg(ap, int);\
+       ll->destroy_fn = (LL_DestroyProc)ptr;\
+       break;\
+     default:\
+@@ -330,7 +330,7 @@
+ 
+    /* Process the Arguments */
+    va_start(ap, first);
+-   for (attr = (enum LL_ATTR)first; attr; attr = va_arg(ap, enum LL_ATTR)) {
++   for (attr = (enum LL_ATTR)first; attr; attr = (enum LL_ATTR) va_arg(ap, int)) {
+       LLMacro_SetAttr(ll, attr, ap, val, ptr);
+       if (!attr) break; /* something went wrong inside --> hit default, bad attribute*/
+    }
+@@ -430,7 +430,7 @@
+ #endif
+    
+    va_start(ap, first);
+-   for (attr = first; attr; attr = va_arg(ap, enum LL_ATTR)) {
++   for (attr = first; attr; attr = (enum LL_ATTR) va_arg(ap, int)) {
+       LLMacro_SetAttr(ll, attr, ap, val, ptr);
+       if (!attr) break; /* Attribute set failure --> BAD ATTRIBUTE  */
+ #ifdef LL_DEBUG
+@@ -478,8 +478,8 @@
+ #endif
+    
+    va_start(ap, first);
+-   for (attr = first; attr; attr = va_arg(ap, enum LL_ATTR)) {
+-      ptr = va_arg(ap, DATA_PTR *);
++   for (attr = first; attr; attr = (enum LL_ATTR) va_arg(ap, int)) {
++      ptr = (DATA_PTR *) va_arg(ap, int);
+       i   = (int*) ptr;
+       switch (attr) {
+        case LL_Intrusive:
+@@ -640,7 +640,7 @@
+    if (!(compare)) {
+       va_list ap;
+       va_start(ap, data);
+-      compare = va_arg(ap, LL_CompareProc);
++      compare = (LL_CompareProc) va_arg(ap, int);
+       va_end(ap);
+    }
+ #ifdef LL_DEBUG
+@@ -1191,7 +1191,7 @@
+    if (!(compare)) {
+       va_list ap;
+       va_start(ap, key);
+-      compare = va_arg(ap, LL_FindProc);
++      compare = (LL_FindProc) va_arg(ap, int);
+       va_end(ap);
+    }
+ 
+@@ -1221,7 +1221,7 @@
+    if (!(compare)) {
+       va_list ap;
+       va_start(ap, key);
+-      compare = va_arg(ap, LL_FindProc);
++      compare = (LL_FindProc) va_arg(ap, int);
+       va_end(ap);
+    }
+ 
+@@ -1251,7 +1251,7 @@
+    if (!(compare)) {
+       va_list ap;
+       va_start(ap, data);
+-      compare = va_arg(ap, LL_FindProc);
++      compare = (LL_FindProc) va_arg(ap, int);
+       va_end(ap);
+    }
+ 
+@@ -1281,7 +1281,7 @@
+    if (!(compare)) {
+       va_list ap;
+       va_start(ap, data);
+-      compare = va_arg(ap, LL_FindProc);
++      compare = (LL_FindProc) va_arg(ap, int);
+       va_end(ap);
+    }
+ 
+@@ -1506,7 +1506,7 @@
+    if (!compare) {
+       va_list ap;
+       va_start(ap, ll);
+-      compare = va_arg(ap, LL_CompareProc);
++      compare = (LL_CompareProc) va_arg(ap, int);
+       va_end(ap);
+    }
+ 
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/lib/timer/timer.c mrt-2.2a-Aug-14-2000/src/lib/timer/timer.c
+--- mrt-2.2a-Aug-14-2000.orig/src/lib/timer/timer.c	Mon Aug 14 20:46:13 2000
++++ mrt-2.2a-Aug-14-2000/src/lib/timer/timer.c	Fri Aug 23 01:24:38 2002
+@@ -435,7 +435,7 @@
+     if (BIT_TEST (flags, TIMER_PUSH_OWNARG))
+         event->args[i++] = timer;
+     for (;i < narg; i++)
+-       event->args[i] = va_arg (ap, void *);
++       event->args[i] = (void *) va_arg (ap, int);
+ 
+     event->call_fn = call_fn;
+ 
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/programs/datadist/util.c mrt-2.2a-Aug-14-2000/src/programs/datadist/util.c
+--- mrt-2.2a-Aug-14-2000.orig/src/programs/datadist/util.c	Mon Aug 14 20:46:14 2000
++++ mrt-2.2a-Aug-14-2000/src/programs/datadist/util.c	Fri Aug 23 01:25:53 2002
+@@ -72,7 +72,7 @@
+         
+         va_start(argp, first);
+ 	LL_Add(list, (void *)first);
+-	while ((arg = va_arg(argp, void*)) != NULL)
++	while ((arg = (void * )va_arg(argp, int)) != NULL)
+ 		LL_Add(list, arg);
+         va_end(list);
+ 
+@@ -89,7 +89,7 @@
+ 
+ 	va_start(argp, count);
+ 	for (i=0; i < count; i++) {
+-		arg = va_arg(argp, void *);
++		arg = (void *) va_arg(argp, int);
+ 		LL_Add(list, arg);
+ 	}
+ 	va_end(list);
+diff -uNr mrt-2.2a-Aug-14-2000.orig/src/programs/route_tracker/telnet.c mrt-2.2a-Aug-14-2000/src/programs/route_tracker/telnet.c
+--- mrt-2.2a-Aug-14-2000.orig/src/programs/route_tracker/telnet.c	Mon Aug 14 20:46:15 2000
++++ mrt-2.2a-Aug-14-2000/src/programs/route_tracker/telnet.c	Fri Aug 23 01:26:32 2002
+@@ -280,7 +280,7 @@
+ 
+     memset (line, 0, MAXLINE);
+ 
+-    format = va_arg (ap, char *);
++    format = (char *) va_arg (ap, int);
+ 
+     vsprintf (cp, format, ap);
+ 
