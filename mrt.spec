@@ -1,8 +1,8 @@
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
-Version:	1.5.1a
-Release:	2d
+Version:	1.5.2a
+Release:	4d
 Copyright:	Distributable
 Group:		Networking/Admin
 Group(pl):	Sieci/Administracja
@@ -24,18 +24,18 @@ protoko³y: RIP, RIPng, BGP oraz BGP4+.
 
 %prep
 %setup -q 
-%patch0  -p1
+%patch0 -p1
 %patch1 -p1
 
 %build
 ./make-sym-links
 cd `ls -d src.*`
-CFLAGS=$RPM_OPT_FLAGS LDFLAGS=-s \
+CFLAGS="$RPM_OPT_FLAGS -D_HAVE_STRING_ARCH_strtok_r" LDFLAGS=-s \
     ./configure \
 	--prefix=/usr \
-	--enable-thread
+	--disable-thread
 
-make CFLAGS="$RPM_OPT_FLAGS"
+make CFLAGS="$RPM_OPT_FLAGS -D_HAVE_STRING_ARCH_strtok_r"
 
 %install
 rm -rf $RPM_BUILD_ROOT
