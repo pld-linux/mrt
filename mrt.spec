@@ -46,7 +46,7 @@ ac_n="-n"; export ac_n
 	--enable-thread \
 	--with-gdbm \
 	--disable-mrouting # broken
-	
+
 %{__make}
 
 %install
