@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# mrtd:         Starts the Dynamic Route Daemon 
+#
+# chkconfig: - 80 45
+# description: Dynamic Route Daemon for IPv6 routers
+#
+# processname: mrtd
+# config: /etc/mrtd.conf
+#
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+# Sanity checks.
+[ -f /etc/mrtd.conf ] || exit 0
+[ -x /usr/sbin/mrtd ] || exit 0
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Try define nice level for mrtd
+NICE="nice -n 1"
+
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 0
+
+# See how we were called.
+case "$1" in
+  start)
+	echo -n "Starting Route Daemon: "
+	$NICE mrtd 
+	echo done
+	touch /var/lock/subsys/mrtd
+	;;
+  stop)
+	echo -n "Stopping Route Daemon: "
+	killproc mrtd 
+	echo done
+	rm -f /var/lock/subsys/mrtd
+	;;
+  status)
+	status mrtd
+	;;
+  restart)
+	$0 stop
+	$0 start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|status|restart}"
+	exit 1
+esac
+
+exit 0

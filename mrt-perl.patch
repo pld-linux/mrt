@@ -1,0 +1,36 @@
+diff -Nur mrt-1.5.0a/src/programs/bgpsim/bgpsim.pl mrt-1.5.0a.orig/src/programs/bgpsim/bgpsim.pl
+--- mrt-1.5.0a/src/programs/bgpsim/bgpsim.pl	Tue Jan  6 21:06:55 1998
++++ mrt-1.5.0a.orig/src/programs/bgpsim/bgpsim.pl	Thu Dec  3 21:18:58 1998
+@@ -1,4 +1,4 @@
+-#!/bin/perl
++#!/usr/bin/perl
+ #
+ # $Id$
+ #
+diff -Nur mrt-1.5.0a/src/programs/route_atob/route_atob.pl mrt-1.5.0a.orig/src/programs/route_atob/route_atob.pl
+--- mrt-1.5.0a/src/programs/route_atob/route_atob.pl	Tue Jan  6 21:06:55 1998
++++ mrt-1.5.0a.orig/src/programs/route_atob/route_atob.pl	Thu Dec  3 21:18:58 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ #
+ # $Id$
+ #
+diff -Nur mrt-1.5.0a/src/programs/route_atob/rsddump_atob.pl mrt-1.5.0a.orig/src/programs/route_atob/rsddump_atob.pl
+--- mrt-1.5.0a/src/programs/route_atob/rsddump_atob.pl	Mon Aug  3 04:12:03 1998
++++ mrt-1.5.0a.orig/src/programs/route_atob/rsddump_atob.pl	Thu Dec  3 21:18:58 1998
+@@ -1,4 +1,4 @@
+-#!/bin/perl
++#!/usr/bin/perl
+ #
+ # Convert RSd style (similar to GateD) ASCII table dump to binary
+ # MRT RIB dump. Once converted, the binary table can be loaded by BGPSim and
+diff -Nur mrt-1.5.0a/src/programs/route_btoa/route_btoa.pl mrt-1.5.0a.orig/src/programs/route_btoa/route_btoa.pl
+--- mrt-1.5.0a/src/programs/route_btoa/route_btoa.pl	Tue Jan  6 21:06:55 1998
++++ mrt-1.5.0a.orig/src/programs/route_btoa/route_btoa.pl	Thu Dec  3 21:18:58 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ #
+ # $Id$
+ #
