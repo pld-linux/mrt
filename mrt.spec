@@ -43,7 +43,7 @@ cd `ls -d src.*`
 install -d $RPM_BUILD_ROOT/usr/{sbin,share/man/{man8,man1}}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 
-make DESTDIR=$RPM_BUILD_ROOT/usr/sbin MANDIR=$RPM_BUILD_ROOT/usr/man install
+make DESTDIR=$RPM_BUILD_ROOT/usr/sbin MANDIR=$RPM_BUILD_ROOT%{_mandir} install
 
 install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT/etc
 
@@ -55,14 +55,14 @@ cp  ../../src/programs/bgpsim/*.conf .
 cp  ../../src/programs/bgpsim/*.pl scripts/
 
 cp  ../../src/programs/route_atob/*.pl scripts/
-cp  ../../src/programs/route_atob/*.1 $RPM_BUILD_ROOT/usr/share/man/man1/
+cp  ../../src/programs/route_atob/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
 cp  ../../src/programs/route_btoa/*.pl scripts/
-cp  ../../src/programs/route_btoa/*.1 $RPM_BUILD_ROOT/usr/share/man/man1/
+cp  ../../src/programs/route_btoa/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
-cp  ../../src/programs/sbgp/*.1 $RPM_BUILD_ROOT/usr/share/man/man1/
+cp  ../../src/programs/sbgp/*.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
-gzip -9nf $RPM_BUILD_ROOT/usr/share/man/man?/* \
+gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man?/* \
 	../../src.*/docs/{*.conf,scripts/*.pl}
 
 %post
@@ -84,7 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(754,root,root) /etc/rc.d/init.d/mrtd
 
 %attr(755,root,root) /usr/sbin/*
-/usr/share/man/man[18]/*
+%{_mandir}/man[18]/*
 
 %changelog
 * Fri May 14 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
