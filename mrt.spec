@@ -68,10 +68,20 @@ cp  ../../src/programs/{sbgp,route_{atob,btoa}}/*.1 $RPM_BUILD_ROOT%{_mandir}/ma
 gzip -9nf ../../src.*/docs/{*.conf,scripts/*.pl}
 
 %post
-NAME=mrtd; DESC="routing daemon"; %chkconfig_add
+/sbin/chkconfig --add mrtd >&2
+if [ -f /var/lock/subsys/mrtd ]; then
+	/etc/rc.d/init.d/mrtd restart >&2
+else
+	echo "Run '/etc/rc.d/init.d/mrtd start' to start routing deamon." >&2
+fi
 
 %preun
-NAME=mrtd; %chkconfig_del
+if [ "$1" = "0" ]; then
+	if [ -f /var/lock/subsys/mrtd ]; then
+		/etc/rc.d/init.d/mrtd stop >&2
+	fi
+	/sbin/chkconfig --del mrtd >&2
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
