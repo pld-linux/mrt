@@ -1,15 +1,19 @@
+%include        /usr/lib/rpm/macros.perl
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
 Name:		mrt
-Version:	2.2.1a
+Version:	2.2.2a
 Release:	1
 Copyright:	Distributable
 Group:		Networking/Admin
-Group(pl):	Sieciowe/Administracyjne
-Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-src.tar.gz
-Source1:	mrt.init
-Patch0:		mrt-perl.patch
+Group(de):	Netzwerkwesen/Administration
+Group(pl):	Sieciowe/Administacyjne
+URL:		http://www.mrtd.net/
+Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-Aug11.tar.gz
+Source1:	%{name}.init
+Patch0:		%{name}-perl.patch
 Prereq:		/sbin/chkconfig
+BuildRequires:	gdbm-devel
 Requires:	rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -22,33 +26,34 @@ MRT jest wielow±tkowym narzêdziem do routingu obs³uguj±cym protoko³y:
 RIP, RIPng, BGP oraz BGP4+.
 
 %prep
-%setup -q 
+%setup -q -n %{name}
 %patch0 -p1
 
 %build
 ./make-sym-links
 (cd src; chmod u+rw configure; autoconf)
+
 cd `ls -d src.*`
-CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 %configure \
 	--enable-ipv6 \
-	--disable-mrouting 
-
+	--enable-thread \
+	--with-gdbm \
+	--disable-mrouting # broken
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 cd `ls -d src.*`
 
-install -d $RPM_BUILD_ROOT%{_sbindir} \
-	$RPM_BUILD_ROOT%{_mandir}/man{1,8}} \
-	$RPM_BUILD_ROOT/etc/rc.d/init.d
+install -d $RPM_BUILD_ROOT%{_sbindir}
+install -d $RPM_BUILD_ROOT%{_mandir}/man{1,8}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT%{_sbindir}
 
 install ../src/programs/mrtd/mrtd.conf $RPM_BUILD_ROOT%{_sysconfdir}
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/mrtd
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/mrtd
 install -d docs/scripts; cd docs
 
 cp  ../../src/programs/bgpsim/*.conf 		.
@@ -60,8 +65,7 @@ cp  ../../src/programs/route_btoa/*.pl		scripts/
 cp  ../../src/programs/route_btoa/*.1		$RPM_BUILD_ROOT%{_mandir}/man1/
 cp  ../../src/programs/sbgp/*.1			$RPM_BUILD_ROOT%{_mandir}/man1/
 
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man?/* \
-	../../src.*/docs/{*.conf,scripts/*.pl}
+gzip -9nf ../../src.*/docs/{*.conf,scripts/*.pl}
 
 %post
 /sbin/chkconfig --add mrtd
@@ -79,7 +83,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc src.*/docs/*
 
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
-%attr(754,root,root) /etc/rc.d/init.d/mrtd
-
+%attr(754,root,root) %{_sysconfdir}/rc.d/init.d/mrtd
 %attr(755,root,root) %{_sbindir}/*
 %{_mandir}/man[18]/*
