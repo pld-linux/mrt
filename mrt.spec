@@ -8,7 +8,7 @@ License:	distributable
 Group:		Networking/Admin
 Group(de):	Netzwerkwesen/Administration
 Group(pl):	Sieciowe/Administracyjne
-Source0:	ftp://ftp.merit.edu/net-research/mrt/%{name}-%{version}-Aug11.tar.gz
+Source0:	http://prdownloads.sourceforge.net/mrt/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Patch0:		%{name}-perl.patch
 URL:		http://www.mrtd.net/
@@ -32,7 +32,7 @@ MRT jest wielow±tkowym narzêdziem do routingu obs³uguj±cym protoko³y:
 RIP, RIPng, BGP oraz BGP4+.
 
 %prep
-%setup -q -n %{name}
+%setup -q -n %{name}-2.2a-Aug-14-2000
 %patch0 -p1
 
 %build
@@ -45,11 +45,12 @@ cd `ls -d src.*`
 	--enable-thread \
 	--with-gdbm \
 	--disable-mrouting # broken
+	
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOTP{%{_sbindir},%{_mandir}/man{1,8}} \
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{1,8}} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 
 cd `ls -d src.*`
