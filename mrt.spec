@@ -89,7 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri May 14 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [1.6.0a-2.990502]
-- now package is FHS 2.0 compliat.
+- now package is FHS 2.0 compliant.
 
 * Wed Jan 27 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
   [1.5.0a-3d]
