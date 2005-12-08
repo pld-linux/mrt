@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# mrtd		Starts the Dynamic Route Daemon 
+# mrtd		Starts the Dynamic Route Daemon
 #
 # chkconfig:	345 80 45
 #
@@ -51,7 +51,7 @@ case "$1" in
 	# Check if the service is already running?
 	if [ -f /var/lock/subsys/mrtd ]; then
 		msg_stopping "Dynamic Route Daemon"
-		killproc mrtd 
+		killproc mrtd
 		rm -f /var/lock/subsys/mrtd
 	else
 		msg_not_running "Dynamic Route Daemon"
