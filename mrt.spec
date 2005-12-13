@@ -18,8 +18,8 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gdbm-devel
 BuildRequires:	rpm-perlprov
-PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 Provides:	routingdaemon
 Obsoletes:	bird
 Obsoletes:	gated
@@ -104,7 +104,7 @@ fi
 %defattr(644,root,root,755)
 %doc src.*/docs/*
 
-%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.conf
 %attr(754,root,root) /etc/rc.d/init.d/mrtd
 %attr(755,root,root) %{_sbindir}/*
 %{_mandir}/man[18]/*
