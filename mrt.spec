@@ -18,6 +18,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gdbm-devel
 BuildRequires:	rpm-perlprov
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
 Provides:	routingdaemon
@@ -86,17 +87,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add mrtd >&2
-if [ -f /var/lock/subsys/mrtd ]; then
-	/etc/rc.d/init.d/mrtd restart >&2
-else
-	echo "Run '/etc/rc.d/init.d/mrtd start' to start routing deamon." >&2
-fi
+%service mrtd restart "routing deamon"
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/mrtd ]; then
-		/etc/rc.d/init.d/mrtd stop >&2
-	fi
+	%service mrtd stop
 	/sbin/chkconfig --del mrtd >&2
 fi
 
