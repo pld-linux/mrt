@@ -87,7 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add mrtd >&2
-%service mrtd restart "routing deamon"
+%service mrtd restart "routing daemon"
 
 %preun
 if [ "$1" = "0" ]; then
