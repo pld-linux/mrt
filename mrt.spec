@@ -1,6 +1,6 @@
 %include        /usr/lib/rpm/macros.perl
 Summary:	Multi-threaded Routing Toolkit
-Summary(pl):	Wielow±tkowe narzêdzia do routingu dynamicznego
+Summary(pl.UTF-8):   WielowÄ…tkowe narzÄ™dzia do routingu dynamicznego
 Name:		mrt
 Version:	2.2.2a
 Release:	6
@@ -32,8 +32,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 MRT is a multi-threaded routing toolkit. It supports RIP, RIPng, BGP
 and BGP4+ protocols, for both IPv4 and IPv6.
 
-%description -l pl
-MRT jest wielow±tkowym narzêdziem do routingu obs³uguj±cym protoko³y:
+%description -l pl.UTF-8
+MRT jest wielowÄ…tkowym narzÄ™dziem do routingu obsÅ‚ugujÄ…cym protokoÅ‚y:
 RIP, RIPng, BGP oraz BGP4+.
 
 %prep
