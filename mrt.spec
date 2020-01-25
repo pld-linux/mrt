@@ -1,4 +1,3 @@
-%include        /usr/lib/rpm/macros.perl
 Summary:	Multi-threaded Routing Toolkit
 Summary(pl.UTF-8):	Wielowątkowe narzędzia do routingu dynamicznego
 Name:		mrt
